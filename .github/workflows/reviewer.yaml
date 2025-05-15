@@ -10,7 +10,7 @@ jobs:
   approval:
     name: Job Selection
     runs-on: ubuntu-latest
-    environment: Testing # Single environment with required approvals
+    environment: Testing 
     outputs:
       selected_job: ${{ steps.job_selector.outputs.selected_job }}
     steps:
