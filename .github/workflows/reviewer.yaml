@@ -1,55 +1,33 @@
-name: Single Environment Selective Job Workflow
+name: Selective Job Execution via Environment
 
 on:
   push:
-    branches:
-      - main  
-    
-      
+    branches: [ main ]
+
+env:
+  MESSAGE: "Hello from the selected job!"
+
 jobs:
-  approval:
-    name: Job Selection
+  job-a:
     runs-on: ubuntu-latest
-    environment: Testing 
-    outputs:
-      selected_job: ${{ steps.job_selector.outputs.selected_job }}
+    environment: Testing
     steps:
-      - name: Select job to run
-        id: job_selector
-        run: |
-          selected_job="${{ vars.SELECTED_JOB }}"
-          
-          if [[ -z "$selected_job" ]]; then
-            # Default if no selection is made
-            selected_job="NONE"
-          fi
-          
-          echo "selected_job=$selected_job" >> $GITHUB_OUTPUT
-          echo "Selected job to run: $selected_job"
+      - name: Print message from Job A
+        run: echo "$MESSAGE - Job A was executed!"
+    # This job will only run if approved via the environment
 
-  job_A:
-    name: Job A
-    needs: approval
-    if: needs.approval.outputs.selected_job == 'A'
+  job-b:
     runs-on: ubuntu-latest
+    environment: Testing
     steps:
-      - name: Print Hello from Job A
-        run: echo "Hello World from Job A!"
+      - name: Print message from Job B
+        run: echo "$MESSAGE - Job B was executed!"
+    # This job will only run if approved via the environment
 
-  job_B:
-    name: Job B
-    needs: approval
-    if: needs.approval.outputs.selected_job == 'B'
+  job-c:
     runs-on: ubuntu-latest
+    environment: Testing
     steps:
-      - name: Print Hello from Job B
-        run: echo "Hello World from Job B!"
-
-  job_C:
-    name: Job C
-    needs: approval
-    if: needs.approval.outputs.selected_job == 'C'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print Hello from Job C
-        run: echo "Hello World from Job C!"
+      - name: Print message from Job C
+        run: echo "$MESSAGE - Job C was executed!"
+    # This job will only run if approved via the environment
