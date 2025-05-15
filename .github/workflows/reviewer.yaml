@@ -9,7 +9,7 @@ jobs:
   approval:
     name: Job Selection
     runs-on: ubuntu-latest
-    environment: Testing  # Single environment with approval
+    environment: Testing  
     outputs:
       job: ${{ steps.select.outputs.selected_job }}
     steps:
