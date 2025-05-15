@@ -1,33 +1,29 @@
-name: Simple Job Selection Workflow
+name: Selective Job Approval via GUI
 
 on:
-  push:
-    branches:
-      - main
+  push
+
+env:
+  MESSAGE: "Hello from the selected job!"
 
 jobs:
-  approval:
-    name: Job Selection
+  job-a:
     runs-on: ubuntu-latest
-    environment: Testing  
-    outputs:
-      job: ${{ steps.select.outputs.selected_job }}
+    environment: Testing
     steps:
-      - id: select
-        run: echo "selected_job=${{ vars.JOB }}" >> $GITHUB_OUTPUT
+      - name: Print message from Job A
+        run: echo "$MESSAGE - Job A was approved and executed!"
 
-  run_jobs:
-    needs: approval
+  job-b:
     runs-on: ubuntu-latest
+    environment: Testing
     steps:
-      - name: Job A
-        if: needs.approval.outputs.job == 'A'
-        run: echo "Hello World from Job A!"
-        
-      - name: Job B
-        if: needs.approval.outputs.job == 'B'
-        run: echo "Hello World from Job B!"
-        
-      - name: Job C
-        if: needs.approval.outputs.job == 'C'
-        run: echo "Hello World from Job C!"
+      - name: Print message from Job B
+        run: echo "$MESSAGE - Job B was approved and executed!"
+
+  job-c:
+    runs-on: ubuntu-latest
+    environment: Testing
+    steps:
+      - name: Print message from Job C
+        run: echo "$MESSAGE - Job C was approved and executed!"
