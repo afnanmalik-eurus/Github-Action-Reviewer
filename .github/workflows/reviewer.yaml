@@ -1,0 +1,38 @@
+name: Run Specific Job 
+
+on:
+  workflow_dispatch:
+    inputs:
+      job_to_run:
+        description: 'Which job do you want to run?'
+        required: true
+        type: choice
+        options:
+          - a
+          - b
+          - c
+
+jobs:
+  job_a:
+    name: Job A - Hello from A
+    runs-on: ubuntu-latest
+    environment: Testing
+    if: github.event.inputs.job_to_run == 'a'
+    steps:
+      - run: echo "Running Job A"
+
+  job_b:
+    name: Job B - Hello from B
+    runs-on: ubuntu-latest
+    environment: Testing
+    if: github.event.inputs.job_to_run == 'b'
+    steps:
+      - run: echo "Running Job B"
+
+  job_c:
+    name: Job C - Hello from C
+    runs-on: ubuntu-latest
+    environment: Testing
+    if: github.event.inputs.job_to_run == 'c'
+    steps:
+      - run: echo "Running Job C"
