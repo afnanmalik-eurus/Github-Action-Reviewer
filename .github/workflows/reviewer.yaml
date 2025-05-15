@@ -1,33 +1,65 @@
-name: Selective Job Execution via Environment
+name: Single Environment Job Selection Workflow
 
 on:
   push:
-    branches: [ main ]
-
-env:
-  MESSAGE: "Hello from the selected job!"
+    branches:
+      - main  # Adjust this to your primary branch name if different
 
 jobs:
-  job-a:
+  approval_job_A:
+    name: Approval for Job A
     runs-on: ubuntu-latest
-    environment: Testing
+    environment: Testing # Single shared environment
+    outputs:
+      approved: 'true'
     steps:
-      - name: Print message from Job A
-        run: echo "$MESSAGE - Job A was executed!"
-    # This job will only run if approved via the environment
+      - name: Mark Job A as approved
+        run: echo "Job A has been approved"
 
-  job-b:
+  approval_job_B:
+    name: Approval for Job B
     runs-on: ubuntu-latest
-    environment: Testing
+    environment: Testing  # Same environment as above
+    outputs:
+      approved: 'true'
     steps:
-      - name: Print message from Job B
-        run: echo "$MESSAGE - Job B was executed!"
-    # This job will only run if approved via the environment
+      - name: Mark Job B as approved
+        run: echo "Job B has been approved"
 
-  job-c:
+  approval_job_C:
+    name: Approval for Job C
     runs-on: ubuntu-latest
-    environment: Testing
+    environment: Testing  # Same environment as above
+    outputs:
+      approved: 'true'
     steps:
-      - name: Print message from Job C
-        run: echo "$MESSAGE - Job C was executed!"
-    # This job will only run if approved via the environment
+      - name: Mark Job C as approved
+        run: echo "Job C has been approved"
+
+  job_A:
+    name: Run Job A
+    needs: approval_job_A
+    # This job will only run if approval_job_A completes
+    # GitHub will automatically cancel other pending jobs once one deployment succeeds
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Hello from Job A
+        run: echo "Hello World from Job A!"
+
+  job_B:
+    name: Run Job B
+    needs: approval_job_B
+    # This job will only run if approval_job_B completes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Hello from Job B
+        run: echo "Hello World from Job B!"
+
+  job_C:
+    name: Run Job C
+    needs: approval_job_C
+    # This job will only run if approval_job_C completes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Hello from Job C
+        run: echo "Hello World from Job C!"
