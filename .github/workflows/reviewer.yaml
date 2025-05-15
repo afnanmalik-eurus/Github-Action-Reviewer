@@ -17,8 +17,6 @@ jobs:
       - name: Select job to run
         id: job_selector
         run: |
-          # This is where you'll make the selection during approval
-          # The actual selection will be made through environment variables set during deployment
           selected_job="${{ vars.SELECTED_JOB }}"
           
           if [[ -z "$selected_job" ]]; then
