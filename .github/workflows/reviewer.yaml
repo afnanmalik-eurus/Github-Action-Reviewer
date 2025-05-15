@@ -1,64 +1,33 @@
-name: Single Environment Job Selection Workflow
+name: Simple Job Selection Workflow
 
 on:
   push:
     branches:
-      - main  # Adjust this to your primary branch name if different
+      - main
 
 jobs:
-  approval_job_A:
-    name: Approval for Job A
+  approval:
+    name: Job Selection
     runs-on: ubuntu-latest
-    environment: Testing # Single shared environment
+    environment: Testing  # Single environment with approval
     outputs:
-      approved: 'true'
+      job: ${{ steps.select.outputs.selected_job }}
     steps:
-      - name: Mark Job A as approved
-        run: echo "Job A has been approved"
+      - id: select
+        run: echo "selected_job=${{ vars.JOB }}" >> $GITHUB_OUTPUT
 
-  approval_job_B:
-    name: Approval for Job B
-    runs-on: ubuntu-latest
-    environment: Testing  # Same environment as above
-    outputs:
-      approved: 'true'
-    steps:
-      - name: Mark Job B as approved
-        run: echo "Job B has been approved"
-
-  approval_job_C:
-    name: Approval for Job C
-    runs-on: ubuntu-latest
-    environment: Testing  # Same environment as above
-    outputs:
-      approved: 'true'
-    steps:
-      - name: Mark Job C as approved
-        run: echo "Job C has been approved"
-
-  job_A:
-    name: Run Job A
-    needs: approval_job_A
-    # This job will only run if approval_job_A completes
-    # GitHub will automatically cancel other pending jobs once one deployment succeeds
+  run_jobs:
+    needs: approval
     runs-on: ubuntu-latest
     steps:
-      - name: Print Hello from Job A
+      - name: Job A
+        if: needs.approval.outputs.job == 'A'
         run: echo "Hello World from Job A!"
-
-  job_B:
-    name: Run Job B
-    needs: approval_job_B
-    # This job will only run if approval_job_B completes
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print Hello from Job B
+        
+      - name: Job B
+        if: needs.approval.outputs.job == 'B'
         run: echo "Hello World from Job B!"
-
-  job_C:
-    name: Run Job C
-    needs: approval_job_C
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print Hello from Job C
+        
+      - name: Job C
+        if: needs.approval.outputs.job == 'C'
         run: echo "Hello World from Job C!"
