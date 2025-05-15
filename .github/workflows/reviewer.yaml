@@ -58,7 +58,6 @@ jobs:
   job_C:
     name: Run Job C
     needs: approval_job_C
-    # This job will only run if approval_job_C completes
     runs-on: ubuntu-latest
     steps:
       - name: Print Hello from Job C
